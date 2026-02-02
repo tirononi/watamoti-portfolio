@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>わたもちGaming Room</title>
+    <meta name="description" content="watamoti">        
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@700;900&family=Fredoka:wght@600&family=M+PLUS+Rounded+1c:wght@700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="sanitize.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="intro-overlay">
+        <div id="sparkle-container"></div>
+    </div>
+
+    <header class="hero container">
+        <h1 class="brand-title">わたもち</h1>
+        <p class="sns-label">SNSリンクはこちら</p>
+        <div class="hero-sns">
+            <a href="https://www.tiktok.com/@watamoti_dayo" class="sns-icon" target="_blank">
+                <i class="fa-brands fa-tiktok"></i>
+                <span class="tooltip">short動画と配信</span>
+            </a>
+            <a href="https://youtube.com/@watamoti_game" class="sns-icon" target="_blank">
+                <i class="fa-brands fa-youtube"></i>
+                <span class="tooltip">Vlog</span>
+            </a>
+            <a href="https://x.com/watamoti_game" class="sns-icon" target="_blank">
+                <i class="fa-brands fa-x-twitter"></i>
+                <span class="tooltip">日常とお部屋の写真</span>
+            </a>
+        </div>
+        
+          
+        <div class="photo-gallery">
+          
+            <div class="photo-item">
+                <p class="photo-moji">on</p>
+                <img src="kurai.jpg" alt="お部屋の写真1">
+            </div>
+            <div class="photo-item">
+                <p class="photo-moji">off</p>
+                <img src="akarui.jpg" alt="お部屋の写真2">
+            </div>
+        </div>
+    </header>
+
+    <section class="section container">
+        <div class="about-title-wrapper">
+            <div class="about-icon">
+                <img src="わた餅アイコン.png" alt="わたもちアイコン">
+            </div>
+            <h2 class="section-title">わたもちについて</h2>
+        </div>
+        <p class="about-moji">↓をタップ</p>
+
+        <div class="about-grid">
+            <div class="about-card">
+                <div class="card-front">
+                    <h3 class="cute-text">かわいいゲーム部屋</h3>
+                </div>
+                <div class="card-back">
+                    <p>・ガジェット紹介</p>
+                    <p>・デスク周りVlog</p>
+                </div>
+            </div>
+
+            <div class="about-card">
+                <div class="card-front">
+                    <h3 class="cute-text">配信</h3>
+                </div>
+                <div class="card-back">
+                    <p>TikTokにて</p>
+                    <p>20時から配信中！</p>
+                </div>
+            </div>
+
+            <div class="about-card">
+                <div class="card-front">
+                    <h3 class="cute-text">わたのCreate</h3>
+                </div>
+                <div class="card-back">
+                    <p>作曲・動画編集・web制作など</p>
+                    <a href="#" style="color: white;">サイトはこちら</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section container">
+        <h2 class="section-title" style="text-align: center; margin-bottom: 5px;">使用中 <br>ゲーミングPC</h2>
+        <div class="pc-border-box">
+            
+            <div class="pc-flex">
+                <div>
+                    <p>メーカー</p>
+                    <h3 class="brand-name">MDL.make</h3>
+                </div>
+                <div class="mdl-area">
+                    <span class="mdl-hint">アイコンタップで<br>クーポン適用</span>
+                    <a href="https://mdlmake.shop/discount/watamoti70?ref=WATAMOTI_GAME" target="_blank">
+                        <img src="mdlrogo.jpg" class="mdl-icon" alt="MDL logo">
+                    </a>
+                </div>
+            </div>
+
+            <div class="coupon-box">
+                <p>↓クーポンコード入力で <strong class="price-off">3,000円OFF</strong></p>
+                <span class="code-highlight">watamoti70</span>
+            </div>
+
+            <div class="spec-flex-container">
+                <img src="pc.jpg" alt="PCイメージ" class="spec-image">
+                <div class="spec-controls">
+                    <div class="spec-btn" onclick="toggleSpec()">スペックを見る</div>
+                    <div id="spec-list" class="spec-content">
+                        CPU：Ryzen 7 9700X<br>
+                        GPU：RX7800XT White<br>
+                        メモリ：32GB<br>
+                        SSD：1TB
+                    </div>
+                    <p class="ad-text">※プロモーションを含みます</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="page-top" class="cloud-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fa-solid fa-cloud"></i>
+        <span style="font-size: 0.7rem; font-weight: bold;">TOP</span>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 わたもち Gaming Room</p>
+    </footer>
+
+    <div id="page-top" class="cloud-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fa-solid fa-cloud"></i>
+        <span style="font-size: 0.7rem; font-weight: bold;">TOP</span>
+    </div>
+
+    <script>
+        // オープニング演出
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('sparkle-container');
+            for (let i = 0; i < 30; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'sparkle-dot';
+                dot.style.setProperty('--tx', `${(Math.random() - 0.5) * 600}px`);
+                dot.style.setProperty('--ty', `${(Math.random() - 0.5) * 600}px`);
+                dot.style.left = '50%'; dot.style.top = '50%';
+                dot.style.background = Math.random() > 0.5 ? '#a2d2ff' : '#ffb7ce';
+                container.appendChild(dot);
+            }
+            setTimeout(() => {
+                const overlay = document.getElementById('intro-overlay');
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.style.display = 'none', 800);
+            }, 1000);
+        });
+
+        // マウスのキラキラ
+        document.addEventListener('mousemove', (e) => {
+            const s = document.createElement('div');
+            s.className = 'mouse-sparkle';
+            s.style.left = e.pageX + 'px';
+            s.style.top = e.pageY + 'px';
+            s.style.background = `hsl(${Math.random() * 60 + 180}, 100%, 80%)`;
+            document.body.appendChild(s);
+            setTimeout(() => s.remove(), 800);
+        });
+
+        // スペック表示
+        function toggleSpec() {
+            const list = document.getElementById('spec-list');
+            list.style.display = (list.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // 流れ星
+        function createStar() {
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            const colors = ['#a2d2ff', '#ffb7ce', '#ffffff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            star.style.background = `linear-gradient(90deg, ${color}, transparent)`;
+            star.style.left = Math.random() * 80 + 20 + 'vw';
+            star.style.top = Math.random() * 30 + 'vh';
+            document.body.appendChild(star);
+            setTimeout(() => star.remove(), 2000);
+        }
+        setInterval(createStar, 1200);
+    </script>
+</body>
+</html>

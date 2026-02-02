@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Active Rhythm Merge - Mobile Fit</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Mochiyen+One&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --purple-grad: linear-gradient(180deg, #fdfcfb 0%, #e2d1f9 100%);
+            --glass: rgba(255, 255, 255, 0.7);
+            --text: #8b7ad1;
+            --pastel-pink: #FFB7CE;
+        }
+        body {
+            margin: 0; padding: 0; overflow: hidden;
+            background: var(--purple-grad);
+            font-family: 'Mochiyen One', sans-serif;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100vh; width: 100vw;
+            touch-action: none; color: var(--text);
+        }
+        .bubble-bg {
+            position: absolute; border-radius: 50%; background: rgba(255, 183, 206, 0.2);
+            pointer-events: none; z-index: -1; animation: float 15s infinite ease-in-out;
+        }
+        @keyframes float {
+            0% { transform: translateY(110vh) scale(1); opacity: 0; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        /* 全体コンテナ：画面に収まるようにスケール */
+        #game-container {
+            display: flex; flex-direction: column; align-items: center;
+            max-width: 100%; max-height: 100%;
+            transform-origin: center center;
+            padding: 10px; box-sizing: border-box;
+        }
+
+        .panel {
+            background: var(--glass); backdrop-filter: blur(10px);
+            border: 3px solid white; border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(139, 122, 209, 0.1);
+            margin: 5px;
+        }
+
+        /* 画面上部のステータス */
+        .status-row {
+            display: flex; justify-content: center; gap: 10px; width: 100%;
+        }
+        .status-item { padding: 8px 15px; font-size: 14px; white-space: nowrap; }
+
+        /* メインキャンバス部分 */
+        #main-area {
+            position: relative; display: flex; gap: 10px; align-items: flex-start;
+        }
+        canvas { 
+            border-radius: 20px; background: rgba(255, 255, 255, 0.2); 
+            max-width: 100%; height: auto; display: block;
+        }
+
+        /* リズムバー */
+        #rhythm-panel {
+            width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px;
+            box-sizing: border-box;
+        }
+        #beat-indicator { flex-grow: 1; height: 16px; background: white; border-radius: 8px; overflow: hidden; border: 2px solid #E2D1F9; }
+        #beat-bar { width: 0%; height: 100%; background: var(--pastel-pink); }
+
+        /* オーバーレイ */
+        .screen-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 100; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            background: rgba(253, 252, 251, 0.8); border-radius: 20px;
+        }
+
+        #judge-text {
+            position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%);
+            font-size: 40px; font-weight: bold; pointer-events: none; z-index: 150; opacity: 0;
+            filter: drop-shadow(2px 2px 0px white);
+        }
+        .perfect { color: #FF85A1; }
+        .miss { color: #A2A2D0; }
+
+        button {
+            background: #FF85A1; color: white; border: none; padding: 12px 30px;
+            border-radius: 30px; cursor: pointer; font-family: 'Mochiyen One', sans-serif;
+            font-size: 18px; box-shadow: 0 4px 0 #e66a8a;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    for (let i = 0; i < 10; i++) {
+        const b = document.createElement('div');
+        b.className = 'bubble-bg';
+        const size = Math.random() * 50 + 20 + "px";
+        b.style.width = size; b.style.height = size;
+        b.style.left = Math.random() * 100 + "vw";
+        b.style.animationDelay = Math.random() * 10 + "s";
+        document.body.appendChild(b);
+    }
+</script>
+
+<div id="game-container">
+    <div class="status-row">
+        <div class="panel status-item">らいふ: <span id="life-count" style="color:var(--pastel-pink)">💗💗💗💗💗</span></div>
+        <div class="panel status-item">すこあ: <span id="score-display">0</span></div>
+    </div>
+
+    <div id="main-area">
+        <div class="panel" style="position: relative; padding: 5px;">
+            <div id="judge-text">Perfect!</div>
+            <canvas id="game-canvas" width="320" height="400"></canvas>
+
+            <div id="overlay" class="screen-overlay">
+                <h2 style="font-size: 20px;">🌙 Active Rhythm</h2>
+                <button id="start-btn">あそぶ！</button>
+            </div>
+            <div id="clear-screen" class="screen-overlay" style="display:none;">
+                <h2>✨ ぴかぴかクリア ✨</h2>
+                <button onclick="location.reload()">もういっかい！</button>
+            </div>
+            <div id="gameover-screen" class="screen-overlay" style="display:none;">
+                <h2>💔 またね</h2>
+                <button onclick="location.reload()">リトライ</button>
+            </div>
+        </div>
+
+        <div class="panel" style="width: 60px; text-align: center; padding: 10px 5px;">
+            <div style="font-size: 12px; margin-bottom: 5px;">つぎ</div>
+            <canvas id="next-canvas" width="50" height="50"></canvas>
+        </div>
+    </div>
+
+    <div class="panel" id="rhythm-panel">
+        <div id="beat-indicator"><div id="beat-bar"></div></div>
+        <div id="tap-guide" style="font-size: 16px;">いま！</div>
+    </div>
+</div>
+
+<script>
+const { Engine, Render, Runner, Bodies, Composite, Events, Vector } = Matter;
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playTone(freq, type='triangle', vol=0.1, len=0.6) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + len);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(); osc.stop(audioCtx.currentTime + len);
+}
+
+const config = {
+    interval: 1800,
+    levels: [
+        { r: 20, color: '#FFB7CE', type: 'heart', score: 10 },
+        { r: 28, color: '#FFDAB9', type: 'star', score: 20 },
+        { r: 38, color: '#B0E0E6', type: 'cloud', score: 40 },
+        { r: 50, color: '#E2D1F9', type: 'moon', score: 80 },
+        { r: 65, color: '#FFFACD', type: 'sun', score: 150 }
+    ]
+};
+
+let score = 0, missCount = 0, nextLevel = 0, gameStarted = false, lastBeat = 0, hasTappedThisTurn = false, mouseX = 160;
+
+const engine = Engine.create({ gravity: { y: 0.8 } });
+const render = Render.create({
+    canvas: document.getElementById('game-canvas'),
+    engine: engine,
+    options: { width: 320, height: 400, wireframes: false, background: 'transparent' }
+});
+
+Composite.add(engine.world, [
+    Bodies.rectangle(160, 410, 320, 20, { isStatic: true, render: { visible: false } }),
+    Bodies.rectangle(-10, 200, 20, 400, { isStatic: true, render: { visible: false } }),
+    Bodies.rectangle(330, 200, 20, 400, { isStatic: true, render: { visible: false } })
+]);
+
+function drawShape(ctx, x, y, level, alpha = 1) {
+    const info = config.levels[level]; const r = info.r;
+    ctx.save(); ctx.translate(x, y); ctx.globalAlpha = alpha; ctx.fillStyle = info.color;
+    ctx.shadowBlur = 8; ctx.shadowColor = "white"; ctx.beginPath();
+    if (info.type === 'heart') {
+        ctx.moveTo(0, r/1.5); ctx.bezierCurveTo(-r, -r/3, -r/2, -r, 0, -r/3); ctx.bezierCurveTo(r/2, -r, r, -r/3, 0, r/1.5);
+    } else if (info.type === 'star') {
+        for(let i=0; i<10; i++){ const rad = i%2===0 ? r : r/2.2; ctx.lineTo(Math.cos(i*Math.PI/5 - Math.PI/2)*rad, Math.sin(i*Math.PI/5 - Math.PI/2)*rad); }
+    } else if (info.type === 'moon') {
+        ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill(); ctx.globalCompositeOperation = 'destination-out';
+        ctx.beginPath(); ctx.arc(r/2, -r/4, r, 0, Math.PI * 2);
+    } else { ctx.arc(0, 0, r, 0, Math.PI*2); }
+    ctx.fill(); ctx.restore();
+}
+
+Events.on(render, 'afterRender', () => {
+    const ctx = render.context;
+    if (gameStarted && !hasTappedThisTurn) {
+        ctx.setLineDash([5, 5]); ctx.strokeStyle = "rgba(255,183,206,0.4)";
+        ctx.beginPath(); ctx.moveTo(mouseX, 40); ctx.lineTo(mouseX, 380); ctx.stroke();
+        drawShape(ctx, mouseX, 40, nextLevel, 0.4);
+    }
+    Composite.allBodies(engine.world).forEach(b => { if (b.label.startsWith('lv_')) drawShape(ctx, b.position.x, b.position.y, parseInt(b.label.split('_')[1])); });
+});
+
+function updateUI() {
+    document.getElementById('life-count').innerText = "💗".repeat(5-missCount) + "🤍".repeat(missCount);
+    document.getElementById('score-display').innerText = score;
+    if (missCount >= 5) { gameStarted = false; document.getElementById('gameover-screen').style.display = 'flex'; }
+}
+
+function beatLoop(time) {
+    if (gameStarted) {
+        const elapsed = time - lastBeat; const progress = (elapsed % config.interval) / config.interval;
+        if (elapsed >= config.interval) {
+            if (!hasTappedThisTurn) { missCount++; updateUI(); playTone(180, 'sine', 0.1, 0.3); }
+            lastBeat = time - (elapsed % config.interval); hasTappedThisTurn = false;
+        }
+        document.getElementById('beat-bar').style.width = (progress * 100) + "%";
+        document.getElementById('tap-guide').style.opacity = (progress > 0.8 || progress < 0.15) ? 1 : 0.3;
+    }
+    requestAnimationFrame(beatLoop);
+}
+requestAnimationFrame(beatLoop);
+
+document.getElementById('start-btn').onclick = (e) => {
+    e.stopPropagation(); audioCtx.resume(); document.getElementById('overlay').style.display = 'none';
+    gameStarted = true; lastBeat = performance.now(); nextLevel = 0;
+    Render.run(render); Runner.run(Runner.create(), engine); updateNext();
+};
+
+const inputHandler = (e) => {
+    if(!gameStarted || hasTappedThisTurn || e.target.tagName === 'BUTTON') return;
+    const rect = render.canvas.getBoundingClientRect();
+    const touchX = (e.clientX || e.touches[0].clientX) - rect.left;
+    mouseX = Math.max(20, Math.min(300, touchX));
+    const elapsed = (performance.now() - lastBeat) % config.interval;
+    const isPerfect = elapsed < 300 || elapsed > config.interval - 300;
+    
+    if (isPerfect) {
+        hasTappedThisTurn = true; playTone(784, 'sine', 0.08, 0.2);
+        Composite.add(engine.world, Bodies.circle(mouseX, 40, config.levels[nextLevel].r, { label: 'lv_'+nextLevel, render: { visible: false }, restitution: 0.3 }));
+        nextLevel = Math.floor(Math.random() * 3); updateNext();
+    } else {
+        hasTappedThisTurn = true; missCount++; updateUI(); playTone(200, 'sine', 0.1, 0.2);
+    }
+};
+
+window.addEventListener('touchstart', (e) => { inputHandler(e); }, {passive: false});
+window.addEventListener('mousedown', (e) => { inputHandler(e); });
+window.addEventListener('touchmove', (e) => {
+    const rect = render.canvas.getBoundingClientRect();
+    const touchX = e.touches[0].clientX - rect.left;
+    mouseX = Math.max(20, Math.min(300, touchX));
+}, {passive: false});
+
+function updateNext() { const ctx = document.getElementById('next-canvas').getContext('2d'); ctx.clearRect(0, 0, 50, 50); drawShape(ctx, 25, 25, nextLevel); }
+
+Events.on(engine, 'collisionStart', (event) => {
+    event.pairs.forEach(pair => {
+        const { bodyA, bodyB } = pair;
+        if (bodyA.label && bodyA.label === bodyB.label && bodyA.label.startsWith('lv_')) {
+            const lv = parseInt(bodyA.label.split('_')[1]);
+            const pos = Vector.div(Vector.add(bodyA.position, bodyB.position), 2);
+            Composite.remove(engine.world, [bodyA, bodyB]);
+            score += config.levels[lv].score; updateUI();
+            if (lv === config.levels.length - 1) { gameStarted = false; document.getElementById('clear-screen').style.display = 'flex'; }
+            else { Composite.add(engine.world, Bodies.circle(pos.x, pos.y, config.levels[lv+1].r, { label: 'lv_'+(lv+1), render: { visible: false } })); playTone(523 + lv * 100, 'sine', 0.1, 0.4); }
+        }
+    });
+});
+</script>
+</body>
+</html>
