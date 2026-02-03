@@ -56,6 +56,67 @@ body {
     pointer-events: none; animation: shoot-left-down 2.0s linear forwards;
 }
 
+.main-header {
+    position: fixed; /* 上に固定 */
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1000px;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.7); /* 半透明 */
+    backdrop-filter: blur(10px); /* ぼかし */
+    border-radius: 50px;
+    border: 2px solid var(--main-blue);
+    padding: 10px 30px;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 900;
+    color: var(--main-blue);
+}
+
+.header-logo img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.header-menu {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+    align-items: center;
+}
+
+.header-menu a {
+    text-decoration: none;
+    color: var(--text-color);
+    font-weight: bold;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.header-menu a:hover {
+    color: var(--pink);
+}
+
+.contact-btn {
+    background: var(--main-blue);
+    color: white !important;
+    padding: 8px 20px;
+    border-radius: 25px;
+}
+
 /* --- ヒーローエリア --- */
 .hero { min-height: 80vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-top: 50px; }
 .brand-title {
