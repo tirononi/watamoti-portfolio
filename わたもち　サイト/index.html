@@ -19,7 +19,6 @@
         <div class="header-container">
             <div class="header-logo">
                 <img src="わた餅アイコン.png" alt="logo">
-                <span>わたもち</span>
             </div>
             <ul class="header-menu">
                 <li><a href="#about">About</a></li>
@@ -65,7 +64,7 @@
             <div class="about-icon">
                 <img src="わた餅アイコン.png" alt="わたもちアイコン">
             </div>
-            <h2 class="section-title">わたもちについて</h2>
+            <h2 class="section-title-se">わたもちについて</h2>
         </div>
         <p class="about-moji">↓をタップ</p>
 
@@ -104,40 +103,50 @@
 
     <section id="pc" class="section container">
         <h2 class="section-title" style="text-align: center; margin-bottom: 5px;">使用中 <br>ゲーミングPC</h2>
+        
         <div class="pc-border-box">
             
             <div class="pc-flex">
-                <div>
+                <div class="pc-p">
                     <p>メーカー</p>
                     <h3 class="brand-name">MDL.make</h3>
                 </div>
                 <div class="mdl-area">
-                    <span class="mdl-hint">アイコンタップで<br>クーポン適用</span>
+                    <span class="mdl-hint">アイコンタップでクーポン適用</span>
                     <a href="https://mdlmake.shop/discount/watamoti70?ref=WATAMOTI_GAME" target="_blank">
                         <img src="mdlrogo.jpg" class="mdl-icon" alt="MDL logo">
                     </a>
                 </div>
+            
             </div>
-
             <div class="coupon-box">
-                <p>↓クーポンコード入力で <strong class="price-off">3,000円OFF</strong></p>
-                <span class="code-highlight">watamoti70</span>
-            </div>
+                <p class="spec-p">クーポンコード <strong class="price-off">watamoti70</strong>入力で</p>
+                <p class="spec-p">3000円off</p>
 
+            </div>
             <div class="spec-flex-container">
                 <img src="pc.jpg" alt="PCイメージ" class="spec-image">
                 <div class="spec-controls">
-                    <div class="spec-btn" onclick="toggleSpec()">スペックを見る</div>
                     <div id="spec-list" class="spec-content">
                         CPU：Ryzen 7 9700X<br>
                         GPU：RX7800XT White<br>
                         メモリ：32GB<br>
                         SSD：1TB
                     </div>
-                    <p class="ad-text">※プロモーションを含みます</p>
+                    <p class="ad-text">※prを含みます</p>
                 </div>
             </div>
         </div>
+    
+        
+    </section>
+
+    <section class="section container">
+        <h2 class="section-title">desk recipe</h2>
+            <div class="desk-block">
+                <img class="deskrecipe" src="setup.png" alt="desk recipe">
+            </div>
+
     </section>
 
     <section id="contact" class="section container">
@@ -163,23 +172,46 @@
 
     <script>
         // オープニング演出
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.getElementById('sparkle-container');
-            for (let i = 0; i < 30; i++) {
-                const dot = document.createElement('div');
-                dot.className = 'sparkle-dot';
-                dot.style.setProperty('--tx', `${(Math.random() - 0.5) * 600}px`);
-                dot.style.setProperty('--ty', `${(Math.random() - 0.5) * 600}px`);
-                dot.style.left = '50%'; dot.style.top = '50%';
-                dot.style.background = Math.random() > 0.5 ? '#a2d2ff' : '#ffb7ce';
-                container.appendChild(dot);
-            }
-            setTimeout(() => {
-                const overlay = document.getElementById('intro-overlay');
-                overlay.style.opacity = '0';
-                setTimeout(() => overlay.style.display = 'none', 800);
-            }, 1000);
-        });
+document.addEventListener('DOMContentLoaded', () => {
+    const container = document.getElementById('sparkle-container');
+    const overlay = document.getElementById('intro-overlay');
+
+    // 中央に表示する画像を作成
+    const introImg = document.createElement('img');
+    introImg.src = 'わたロゴ.png'; // ここを表示したい画像パスに変えてね
+    introImg.style.cssText = `
+        position: absolute;
+        width: 350px;
+        height:auto;
+        transform: scale(0.5);
+        transition: all 1s ease;
+        z-index: 10001;
+    `;
+    overlay.appendChild(introImg);
+
+    // キラキラの生成
+    for (let i = 0; i < 30; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'sparkle-dot';
+        dot.style.setProperty('--tx', `${(Math.random() - 0.5) * 600}px`);
+        dot.style.setProperty('--ty', `${(Math.random() - 0.5) * 600}px`);
+        dot.style.left = '50%'; dot.style.top = '50%';
+        dot.style.background = Math.random() > 0.5 ? '#a2d2ff' : '#ffb7ce';
+        container.appendChild(dot);
+    }
+
+    // 画像をふわっと出す
+    setTimeout(() => {
+        introImg.style.opacity = '1';
+        introImg.style.transform = 'scale(1)';
+    }, 100);
+
+    // 最後にすべてを消す
+    setTimeout(() => {
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.style.display = 'none', 800);
+    }, 2000); // 2秒間見せる
+});
 
         // マウスのキラキラ
         document.addEventListener('mousemove', (e) => {
