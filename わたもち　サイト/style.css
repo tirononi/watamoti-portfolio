@@ -288,3 +288,9 @@ width: 70%;
 .mdl-hint {
     color: #fbe9ab;
 }
+
+.spec-item {
+    border-bottom: 1px solid #a2d2ff; /* 下線の種類 */
+    padding: 8px 0;               /* 線と文字の間の余白 */
+    margin-bottom: 4px;           /* 次の行との間隔 */
+}
